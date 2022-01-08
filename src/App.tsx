@@ -1,25 +1,21 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Layout } from "antd";
+import { Header, Footer, Content } from "antd/lib/layout/layout";
+import "./App.css";
+import Search from "./components/ProductCatalogSearch";
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout style={{ display: "flex", flexDirection: "column", minHeight: "100vh"}}>
+      <Header style={{ color: 'white', backgroundColor: 'black' }}>header</Header>
+      <Content style={{ padding: '30px 25px', flex: 1  }}>
+        <div className="App">
+          <Search />
+        </div>
+      </Content>
+      <Footer style={{ color: 'white', backgroundColor: 'black', height: '10vh'}}>Footer</Footer>
+    </Layout>
   );
 }
 
