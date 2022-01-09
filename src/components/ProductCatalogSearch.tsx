@@ -4,6 +4,7 @@ import { Input } from "antd";
 import { CameraOutlined } from "@ant-design/icons";
 import axios from "axios";
 import ProductCatalogSearchResult from "./ProductCatalogSearchResult";
+import BarcodeScanner from "./BarcodeScanner";
 
 const { Search } = Input;
 
@@ -18,8 +19,10 @@ const SearchContainer = styled.div`
 const ProductCatalogSearch = () => {
   const [searchText, setSearchText] = useState("");
   const [searchResult, setSearchResult] = useState([]);
+  const [showBarcodeScanner, setShowBarcodeScanner] = React.useState(false)
+
   const handleSuffixClick = (event: React.MouseEvent<HTMLElement>) => {
-    console.log("Camera clicked !!!!");
+    setShowBarcodeScanner(!showBarcodeScanner);
   };
 
   useEffect(() => {
@@ -41,6 +44,10 @@ const ProductCatalogSearch = () => {
   const handleSearch = (value: string) => {
     setSearchText(value);
   } 
+  const updateBarcodeResult = (value: any) => {
+      setSearchText(value);
+     setShowBarcodeScanner(false);
+    }
 
   const suffix = (
     <CameraOutlined
@@ -65,6 +72,7 @@ const ProductCatalogSearch = () => {
           onChange={handleChange}
         />
       </SearchContainer>
+      <div>{ showBarcodeScanner ? <BarcodeScanner data={updateBarcodeResult}/> : null}</div>
       <ProductCatalogSearchResult searchResult={searchResult} />
     </div>
   );
