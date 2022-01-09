@@ -42,12 +42,14 @@ const ProductCatalogSearch = () => {
   };
 
   function getProductCatalogs() {
-    let endpoint = "http://127.0.0.1:5000/product-catalog";
-    if (filters.find(filter => filter == 'Curated List')) {
+    let endpoint = "http://127.0.0.1:4000/product-catalog";
+    if (filters.find(filter => filter === 'Curated List')) {
       endpoint += `?filterBy=CURATED_LIST`
     } else if (!!searchText && !!searchText.trim()) {
       endpoint += `?q=${searchText}`
-    }
+    } else if(filters.length > 0) {
+      endpoint += `?filterBy=${filters}`
+    } 
     axios
         .get(endpoint)
         .then((response) => {
@@ -56,7 +58,7 @@ const ProductCatalogSearch = () => {
   }
 
   function getMyListings() {
-    let endpoint = `http://127.0.0.1:5000/store/${storeId}`;
+    let endpoint = `http://127.0.0.1:4000/store/${storeId}`;
     axios
         .get(endpoint)
         .then((response) => {
@@ -65,13 +67,12 @@ const ProductCatalogSearch = () => {
   }
 
   useEffect(() => {
-    if(filters.find(filter => filter == 'Listed Products')) {
+    if(filters.find(filter => filter === 'Listed Products')) {
       getMyListings();
     } else {
       getProductCatalogs();
     }
-
-  }, [searchText]);
+  }, [searchText, filters]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(event.target.value);

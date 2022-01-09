@@ -24,6 +24,7 @@ type StoreProduct = {
 
 const Incrementor = ({ product, storePrice, onChange } : Props) => {
   const [quantity, setQuantity] = useState(1);
+  
   useEffect(() => {
     onChange(quantity);
   }, [quantity]);
