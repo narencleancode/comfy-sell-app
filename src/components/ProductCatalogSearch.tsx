@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Button, Divider, Drawer, Input, Tooltip } from "antd";
-import { CameraOutlined, FilterOutlined } from "@ant-design/icons";
+import { CameraOutlined, FilterOutlined, ScanOutlined } from "@ant-design/icons";
 import axios from "axios";
 import ProductCatalogSearchResult from "./ProductCatalogSearchResult";
 import BarcodeScanner from "./BarcodeScanner";
 import FilterSelection from "./FilterSelection";
 import SelectedFilters from "./SelectedFilters";
 import FilterContext from "../contexts/FilterContext";
+import WebcamCapture from "./ProductImageCapture";
 
 const { Search } = Input;
 
@@ -26,8 +27,16 @@ const ProductCatalogSearch = () => {
   const [showFilters, setShowFilters] = React.useState(false);
   const [filters, setFilters] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
+  const [showCamera, setShowCamera] = React.useState(false)
 
   const handleSuffixClick = (event: React.MouseEvent<HTMLElement>) => {
+    console.log("Camera Clicked!!")
+    setShowBarcodeScanner(false);
+    setShowCamera(!showCamera);
+  };
+
+  const handleBarcodeScanner = (event: React.MouseEvent<HTMLElement>) => {
+    setShowCamera(false);
     setShowBarcodeScanner(!showBarcodeScanner);
   };
 
@@ -50,9 +59,10 @@ const ProductCatalogSearch = () => {
   const handleSearch = (value: string) => {
     setSearchText(value);
   } 
-  const updateBarcodeResult = (value: any) => {
-      setSearchText(value);
+  const updateSearchInputResult = (value: any) => {
+     setSearchText(value);
      setShowBarcodeScanner(false);
+     setShowCamera(false);
     }
 
   const openFilters = (event: React.MouseEvent<HTMLElement>) => {
@@ -60,6 +70,7 @@ const ProductCatalogSearch = () => {
   }
 
   const suffix = (
+    <React.Fragment>
     <CameraOutlined
       style={{
         fontSize: 16,
@@ -67,6 +78,15 @@ const ProductCatalogSearch = () => {
       }}
       onClick={handleSuffixClick}
     />
+    <ScanOutlined 
+      style={{
+        fontSize: 16,
+        color: "#1890ff",
+        marginLeft: "10px"
+      }}
+    onClick={handleBarcodeScanner}
+    /> 
+    </React.Fragment>
   );
 
   return (
@@ -91,7 +111,8 @@ const ProductCatalogSearch = () => {
 
         <SelectedFilters></SelectedFilters>
         <Divider orientation="left">Results</Divider>
-        <div>{ showBarcodeScanner ? <BarcodeScanner data={updateBarcodeResult}/> : null}</div>
+        <div>{ showBarcodeScanner ? <BarcodeScanner data={updateSearchInputResult}/> : null}</div>
+        <div>{ showCamera ? <WebcamCapture data={updateSearchInputResult}/> : null}</div>
         <ProductCatalogSearchResult searchResult={searchResult} />
         <Drawer
             title="Filters"
