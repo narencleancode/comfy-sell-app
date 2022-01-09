@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button, Input } from "antd"
 import styled from "styled-components"
 import { ImageUrl, ProductAsset } from "./ProductCatalogSearchResult"
@@ -6,6 +6,7 @@ import { ImageUrl, ProductAsset } from "./ProductCatalogSearchResult"
 type Props = {
   product: ProductAsset;
   storePrice: number;
+  onChange: (value: number) => void;
 }
 
 type StoreProduct = {
@@ -21,26 +22,19 @@ type StoreProduct = {
   storePrice: number;
 }
 
-const constructStoreProduct = (productAsset: ProductAsset, quantity: number, storePrice: number): StoreProduct => {
-  return {
-    ...productAsset,
-    quantity,
-    storePrice
-  }
-}
-
-const Incrementor = ({ product, storePrice } : Props) => {
+const Incrementor = ({ product, storePrice, onChange } : Props) => {
   const [quantity, setQuantity] = useState(1);
+  useEffect(() => {
+    onChange(quantity);
+  }, [quantity]);
   
   const incrementQuantity = () => {
     setQuantity(quantity + 1);
-    console.log(constructStoreProduct(product, quantity, storePrice));
   }
 
   const decrementQuantity = () => {
     if(quantity > 0) {
       setQuantity(quantity - 1);
-      constructStoreProduct(product, quantity, storePrice);
     }
   }
 

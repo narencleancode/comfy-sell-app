@@ -1,13 +1,15 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useState } from "react"
 import { Button, Input, Tag } from "antd"
 import styled from "styled-components"
 import Incrementor from "./Incrementor"
 import { ProductAsset } from "./ProductCatalogSearchResult"
 import Title from "antd/lib/typography/Title"
+import { StoreService } from "../services/StoreService"
 
 type Props = {
-  searchResultItem: ProductAsset
+  searchResultItem: ProductAsset,
+  storeId: string
 }
 
 const SearchResultContainer = styled.div`
@@ -31,12 +33,29 @@ const AlignRight = styled.div`
   justify-content: flex-end;
 `
 
-const ProductCatalogSearchResultItem = ({searchResultItem}: Props) => {
+const ProductCatalogSearchResultItem = ({searchResultItem, storeId}: Props) => {
   const [showQuantityIncremeter, setShowQuantityIncrementor] = useState(false)
   const [storePrice, setStorePrice] = useState(searchResultItem.maximumRetailPrice);
+  const [quantity, setQuantity] = useState(0);
+
+  const saveProduct = (price?: number, qty?: number) => {
+    StoreService.addOrUpdateProduct(storeId, {
+      ...searchResultItem,
+      storePrice: price ?? storePrice,
+      quantity: qty ?? quantity
+    });
+  }
 
   const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setStorePrice(+event.target.value);
+    saveProduct(+event.target.value, quantity);
+  };
+
+  const handleQuantityChange = (value: number) => {
+    setQuantity(value);
+    if (value > 0) {
+      saveProduct(storePrice, value);
+    }
   }
 
   const addQuantity = (event: React.MouseEvent<HTMLElement>) => {
@@ -61,7 +80,7 @@ const ProductCatalogSearchResultItem = ({searchResultItem}: Props) => {
                 <Input type="number" addonBefore={"₹"} style={{ width: "70%", marginBottom: "8px" }} value={storePrice}  onChange={handlePriceChange} />
                 </div>
                 { !showQuantityIncremeter && <Button type="primary" style={{ width: "100%", float: "right"}} size={'middle'} onClick={addQuantity}>Add</Button> }
-                { showQuantityIncremeter && <AlignRight><Incrementor product={searchResultItem} storePrice={storePrice} /></AlignRight> }
+                { showQuantityIncremeter && <AlignRight><Incrementor product={searchResultItem} storePrice={storePrice} onChange={handleQuantityChange} /></AlignRight> }
               </SearchResultContent>
             </SearchResultContainer>
   </div>
