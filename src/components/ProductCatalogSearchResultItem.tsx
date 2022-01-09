@@ -35,8 +35,8 @@ const AlignRight = styled.div`
 
 const ProductCatalogSearchResultItem = ({searchResultItem, storeId}: Props) => {
   const [showQuantityIncremeter, setShowQuantityIncrementor] = useState(false)
-  const [storePrice, setStorePrice] = useState(searchResultItem.maximumRetailPrice);
-  const [quantity, setQuantity] = useState(0);
+  const [storePrice, setStorePrice] = useState(searchResultItem.storePrice ?? searchResultItem.maximumRetailPrice);
+  const [quantity, setQuantity] = useState(searchResultItem.quantity ?? 0);
 
   const saveProduct = (price?: number, qty?: number) => {
     StoreService.addOrUpdateProduct(storeId, {

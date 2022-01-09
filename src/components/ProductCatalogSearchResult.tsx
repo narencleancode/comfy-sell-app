@@ -13,6 +13,8 @@ export type ProductAsset = {
   unit: string;
   weight: number;
   maximumRetailPrice: number;
+  storePrice: number;
+  quantity: number;
   image: ImageUrl;
 }
 

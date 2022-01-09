@@ -21,6 +21,7 @@ const SearchContainer = styled.div`
 `;
 
 const ProductCatalogSearch = () => {
+  const storeId = "8888"; // TODO: fetch from authentication
   const [searchText, setSearchText] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [showBarcodeScanner, setShowBarcodeScanner] = React.useState(false)
@@ -40,16 +41,36 @@ const ProductCatalogSearch = () => {
     setShowBarcodeScanner(!showBarcodeScanner);
   };
 
-  useEffect(() => {
+  function getProductCatalogs() {
     let endpoint = "http://127.0.0.1:5000/product-catalog";
-    if (!!searchText && !!searchText.trim()) {
+    if (filters.find(filter => filter == 'Curated List')) {
+      endpoint += `?filterBy=CURATED_LIST`
+    } else if (!!searchText && !!searchText.trim()) {
       endpoint += `?q=${searchText}`
     }
     axios
-    .get(endpoint)
-    .then((response) => {
-      setSearchResult(response.data);
-    });
+        .get(endpoint)
+        .then((response) => {
+          setSearchResult(response.data);
+        });
+  }
+
+  function getMyListings() {
+    let endpoint = `http://127.0.0.1:5000/store/${storeId}`;
+    axios
+        .get(endpoint)
+        .then((response) => {
+          setSearchResult(response.data.storeCatalogs);
+        });
+  }
+
+  useEffect(() => {
+    if(filters.find(filter => filter == 'Listed Products')) {
+      getMyListings();
+    } else {
+      getProductCatalogs();
+    }
+
   }, [searchText]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
