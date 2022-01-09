@@ -22,13 +22,14 @@ export type ImageUrl = {
 }
 
 const ProductCatalogSearchResult = ({searchResult}: ProductCatalogAsset) => {
+  const storeId = "8888"; // TODO: fetch from authentication
  
   return (
     <div>
       {searchResult.map((searchResultItem: ProductAsset) => {
         return (
           <div key={searchResultItem.productCode}>
-            <ProductCatalogSearchResultItem searchResultItem={searchResultItem} />
+            <ProductCatalogSearchResultItem storeId={storeId} searchResultItem={searchResultItem} />
           </div>
         );
       })}
