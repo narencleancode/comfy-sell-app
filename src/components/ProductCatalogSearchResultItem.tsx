@@ -1,6 +1,6 @@
 import React from "react"
 import { useState } from "react"
-import { Button } from "antd"
+import { Button, Tag } from "antd"
 import styled from "styled-components"
 import Incrementor from "./Incrementor"
 import { ProductCatalog } from "./ProductCatalogSearchResult"
@@ -57,6 +57,8 @@ const ProductCatalogSearchResultItem = ({searchResultItem}: Props) => {
               </SearchResultContent>
               <SearchResultContent>
                 <Title level={5}>{searchResultItem.title}</Title>
+                <Tag color="blue">{searchResultItem.category}</Tag>
+                <Tag color="green">{searchResultItem.subCategory}</Tag>
                 <div>{`${searchResultItem.weight} ${searchResultItem.unit}`}</div>
                 <div><RupeeIcon src="rupees.png" alt="rupee"  />
                 <Rupee>{searchResultItem.maximumRetailPrice}</Rupee>  
