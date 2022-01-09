@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Input } from "antd";
-import { CameraOutlined } from "@ant-design/icons";
+import { Button, Divider, Drawer, Input, Tooltip } from "antd";
+import { CameraOutlined, FilterOutlined } from "@ant-design/icons";
 import axios from "axios";
 import ProductCatalogSearchResult from "./ProductCatalogSearchResult";
 import BarcodeScanner from "./BarcodeScanner";
+import FilterSelection from "./FilterSelection";
+import SelectedFilters from "./SelectedFilters";
+import FilterContext from "../contexts/FilterContext";
 
 const { Search } = Input;
 
 const SearchContainer = styled.div`
-  height: 100px;
   width: 100%;
   display: flex;
+  margin-bottom: 16px;
   position: relative;
   text-align: center;
 `;
@@ -20,6 +23,9 @@ const ProductCatalogSearch = () => {
   const [searchText, setSearchText] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [showBarcodeScanner, setShowBarcodeScanner] = React.useState(false)
+  const [showFilters, setShowFilters] = React.useState(false);
+  const [filters, setFilters] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
 
   const handleSuffixClick = (event: React.MouseEvent<HTMLElement>) => {
     setShowBarcodeScanner(!showBarcodeScanner);
@@ -49,6 +55,10 @@ const ProductCatalogSearch = () => {
      setShowBarcodeScanner(false);
     }
 
+  const openFilters = (event: React.MouseEvent<HTMLElement>) => {
+    setShowFilters(true);
+  }
+
   const suffix = (
     <CameraOutlined
       style={{
@@ -61,19 +71,39 @@ const ProductCatalogSearch = () => {
 
   return (
     <div>
-      <h2 style={{ textAlign: "center" }}>Product Catalog Digitization</h2>
-      <SearchContainer>
-        <Search
-          placeholder="input search text"
-          enterButton="Search"
-          size="large"
-          suffix={suffix}
-          onSearch={handleSearch}
-          onChange={handleChange}
-        />
-      </SearchContainer>
-      <div>{ showBarcodeScanner ? <BarcodeScanner data={updateBarcodeResult}/> : null}</div>
-      <ProductCatalogSearchResult searchResult={searchResult} />
+      <FilterContext.Provider value={{filters, categories, setFilters, setCategories}}>
+        <h2 style={{ textAlign: "center" }}>Product Catalog Digitization</h2>
+        <SearchContainer>
+          <Search
+            placeholder="input search text"
+            enterButton
+            size="large"
+            suffix={suffix}
+            onSearch={handleSearch}
+            onChange={handleChange}
+          />
+
+          <Tooltip title="Filter">
+            <Button type="default" size="large" icon={<FilterOutlined />} onClick={openFilters} />
+          </Tooltip>
+
+        </SearchContainer>
+
+        <SelectedFilters></SelectedFilters>
+        <Divider orientation="left">Results</Divider>
+        <div>{ showBarcodeScanner ? <BarcodeScanner data={updateBarcodeResult}/> : null}</div>
+        <ProductCatalogSearchResult searchResult={searchResult} />
+        <Drawer
+            title="Filters"
+            placement="bottom"
+            closable={true}
+            onClose={() => setShowFilters(false)}
+            visible={showFilters}
+            size="large"
+          >
+            <FilterSelection/>
+          </Drawer>
+      </FilterContext.Provider>
     </div>
   );
 };
