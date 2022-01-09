@@ -1,11 +1,11 @@
-import React from "react";
+import React, { SetStateAction, useState } from "react";
 import { Layout } from "antd";
 import { Header, Footer, Content } from "antd/lib/layout/layout";
 import "./App.css";
 import ProductCatalogSearch from "./components/ProductCatalogSearch";
 
-
 function App() {
+
   return (
     <Layout style={{ display: "flex", flexDirection: "column", minHeight: "100vh"}}>
       <Header style={{ color: 'white', backgroundColor: 'black', fontSize: "25px", textAlign: "center" }}>Comfy Sell</Header>

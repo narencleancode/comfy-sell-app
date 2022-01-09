@@ -1,11 +1,11 @@
 import React from "react"
 import ProductCatalogSearchResultItem from "./ProductCatalogSearchResultItem"
 
-type Props = {
-  searchResult: ProductCatalog[];
+type ProductCatalogAsset = {
+  searchResult: ProductAsset[];
 }
 
-export type ProductCatalog = {
+export type ProductAsset = {
   productCode: string;
   title: string;
   category: string;
@@ -16,16 +16,16 @@ export type ProductCatalog = {
   image: ImageUrl;
 }
 
-type ImageUrl = {
+export type ImageUrl = {
   thumbnailUrl: string;
   url: string;
 }
 
-const ProductCatalogSearchResult = ({searchResult}: Props) => {
+const ProductCatalogSearchResult = ({searchResult}: ProductCatalogAsset) => {
  
   return (
     <div>
-      {searchResult.map((searchResultItem: ProductCatalog) => {
+      {searchResult.map((searchResultItem: ProductAsset) => {
         return (
           <div key={searchResultItem.productCode}>
             <ProductCatalogSearchResultItem searchResultItem={searchResultItem} />

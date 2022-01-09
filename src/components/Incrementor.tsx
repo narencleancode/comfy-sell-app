@@ -1,39 +1,80 @@
-import { Button } from "antd"
 import React, { useState } from "react"
+import { Button, Input } from "antd"
 import styled from "styled-components"
+import { ImageUrl, ProductAsset } from "./ProductCatalogSearchResult"
 
-const Incrementor = () => {
-  const [inputValue, setinputValue] = useState(1)
+type Props = {
+  product: ProductAsset;
+  storePrice: number;
+}
+
+type StoreProduct = {
+  productCode: string;
+  title: string;
+  category: string;
+  subCategory: string;
+  unit: string;
+  weight: number;
+  maximumRetailPrice: number;
+  image: ImageUrl;
+  quantity: number;
+  storePrice: number;
+}
+
+const constructStoreProduct = (productAsset: ProductAsset, quantity: number, storePrice: number): StoreProduct => {
+  return {
+    ...productAsset,
+    quantity,
+    storePrice
+  }
+}
+
+const Incrementor = ({ product, storePrice } : Props) => {
+  const [quantity, setQuantity] = useState(1);
   
   const incrementQuantity = () => {
-    setinputValue(inputValue + 1)
+    setQuantity(quantity + 1);
+    console.log(constructStoreProduct(product, quantity, storePrice));
   }
 
   const decrementQuantity = () => {
-    if(inputValue > 0) {
-      setinputValue(inputValue - 1)
+    if(quantity > 0) {
+      setQuantity(quantity - 1);
+      constructStoreProduct(product, quantity, storePrice);
     }
   }
 
-  const handleChange = () => {
-    setinputValue(inputValue);
+  const handleChangeQuantity = (event: React.ChangeEvent<HTMLInputElement>) => {    
+    setQuantity(+event.target.value);
   }
 
   const buttonStyle = { flex: 1, fontWeight: 'bold' }
   const IncrementorContainer = styled.div`
     display: flex;
-    max-width: 70%;
-  `
-  const NumberInput = styled.input`
-    text-align: center;
-    max-width: 50px;
+    width: 100%;
   `
 
-
-  return (<IncrementorContainer>
-    <Button type="primary" style={buttonStyle} size={'middle'} onClick={decrementQuantity}>-</Button>  
-    <NumberInput type="number" value={inputValue} onChange={handleChange} />
-    <Button type="primary" style={buttonStyle} size={'middle'} onClick={incrementQuantity}>+</Button>
-  </IncrementorContainer>)
+  return (
+    <IncrementorContainer>
+      <Button
+        type="primary"
+        style={buttonStyle}
+        size={"middle"}
+        onClick={decrementQuantity}
+      >
+        -
+      </Button>
+      <Input type="number" style={{ textAlign: "center", maxWidth: "70px"}} value={quantity} onChange={handleChangeQuantity} />
+      <Button
+        type="primary"
+        style={buttonStyle}
+        size={"middle"}
+        onClick={incrementQuantity}
+      >
+        +
+      </Button>
+    </IncrementorContainer>
+  );
 } 
+
 export default Incrementor
