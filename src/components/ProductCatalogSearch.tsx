@@ -44,7 +44,7 @@ const ProductCatalogSearch = () => {
   function getProductCatalogs() {
     let endpoint = "http://127.0.0.1:4000/product-catalog";
     if (filters.find(filter => filter === 'Curated List')) {
-      endpoint += `?filterBy=CURATED_LIST`
+      endpoint += `?filterBy=Curated List`
     } else if (!!searchText && !!searchText.trim()) {
       endpoint += `?q=${searchText}`
     } else if(filters.length > 0) {

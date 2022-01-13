@@ -26,7 +26,7 @@ const videoConstraints = {
             headers: { 'content-type': 'multipart/form-data' }
         }
 
-        axios.post('http://127.0.0.1:4000/image-search', data, config).then(res => {
+        axios.post('http://127.0.0.1:5000/image-search', data, config).then(res => {
                 if(res.data.length > 0) {
                     returnImageScanResult(res.data[0].className);
                 } else {
