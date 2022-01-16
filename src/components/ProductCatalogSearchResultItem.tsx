@@ -34,7 +34,7 @@ const AlignRight = styled.div`
 `
 
 const ProductCatalogSearchResultItem = ({searchResultItem, storeId}: Props) => {
-  const [showQuantityIncremeter, setShowQuantityIncrementor] = useState(false)
+  const [showQuantityIncremeter, setShowQuantityIncrementor] = useState(searchResultItem.quantity > 0)
   const [storePrice, setStorePrice] = useState(searchResultItem.storePrice ?? searchResultItem.maximumRetailPrice);
   const [quantity, setQuantity] = useState(searchResultItem.quantity ?? 0);
 
@@ -59,7 +59,7 @@ const ProductCatalogSearchResultItem = ({searchResultItem, storeId}: Props) => {
   }
 
   const addQuantity = (event: React.MouseEvent<HTMLElement>) => {
-    setShowQuantityIncrementor(true)
+    setShowQuantityIncrementor(true);
   }
 
   return (<div>
@@ -80,7 +80,7 @@ const ProductCatalogSearchResultItem = ({searchResultItem, storeId}: Props) => {
                 <Input type="number" addonBefore={"₹"} style={{ width: "70%", marginBottom: "8px" }} value={storePrice}  onChange={handlePriceChange} />
                 </div>
                 { !showQuantityIncremeter && <Button type="primary" style={{ width: "100%", float: "right"}} size={'middle'} onClick={addQuantity}>Add</Button> }
-                { showQuantityIncremeter && <AlignRight><Incrementor product={searchResultItem} storePrice={storePrice} onChange={handleQuantityChange} /></AlignRight> }
+                { showQuantityIncremeter && <AlignRight><Incrementor product={searchResultItem} onChange={handleQuantityChange} /></AlignRight> }
               </SearchResultContent>
             </SearchResultContainer>
   </div>

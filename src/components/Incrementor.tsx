@@ -1,33 +1,19 @@
 import React, { useEffect, useState } from "react"
 import { Button, Input } from "antd"
 import styled from "styled-components"
-import { ImageUrl, ProductAsset } from "./ProductCatalogSearchResult"
+import { ProductAsset } from "./ProductCatalogSearchResult"
 
 type Props = {
   product: ProductAsset;
-  storePrice: number;
   onChange: (value: number) => void;
 }
 
-type StoreProduct = {
-  productCode: string;
-  title: string;
-  category: string;
-  subCategory: string;
-  unit: string;
-  weight: number;
-  maximumRetailPrice: number;
-  image: ImageUrl;
-  quantity: number;
-  storePrice: number;
-}
-
-const Incrementor = ({ product, storePrice, onChange } : Props) => {
-  const [quantity, setQuantity] = useState(1);
+const Incrementor = ({ product, onChange } : Props) => {
+  const [quantity, setQuantity] = useState(product.quantity ?? 1);
   
   useEffect(() => {
     onChange(quantity);
-  }, [quantity]);
+  }, [quantity, onChange]);
   
   const incrementQuantity = () => {
     setQuantity(quantity + 1);
