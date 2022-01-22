@@ -1,4 +1,5 @@
 import React from "react"
+import { STORE_ID } from "../services/config"
 import ProductCatalogSearchResultItem from "./ProductCatalogSearchResultItem"
 
 type ProductCatalogAsset = {
@@ -24,7 +25,7 @@ export type ImageUrl = {
 }
 
 const ProductCatalogSearchResult = ({searchResult}: ProductCatalogAsset) => {
-  const storeId = "8888"; // TODO: fetch from authentication
+  const storeId = STORE_ID;
  
   return (
     <div>

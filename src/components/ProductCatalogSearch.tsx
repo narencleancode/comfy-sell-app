@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Button, Divider, Drawer, Input, Tooltip, message, Empty } from "antd";
 import { CameraOutlined, FilterOutlined, ScanOutlined, CloseOutlined } from "@ant-design/icons";
-import axios from "axios";
 import ProductCatalogSearchResult from "./ProductCatalogSearchResult";
 import BarcodeScanner from "./BarcodeScanner";
 import FilterSelection from "./FilterSelection";
@@ -11,6 +10,8 @@ import FilterContext from "../contexts/FilterContext";
 import WebcamCapture from "./ProductImageCapture";
 import Title from "antd/lib/typography/Title";
 import { StoreService } from "../services/StoreService";
+import { ProductCatalogService } from "../services/ProductCatalogService";
+import { STORE_ID } from "../services/config";
 
 const { Search } = Input;
 
@@ -23,7 +24,7 @@ const SearchContainer = styled.div`
 `;
 
 const ProductCatalogSearch = () => {
-  const storeId = "8888"; // TODO: fetch from authentication
+  const storeId = STORE_ID;
   const [searchText, setSearchText] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [showBarcodeScanner, setShowBarcodeScanner] = React.useState(false)
@@ -44,19 +45,19 @@ const ProductCatalogSearch = () => {
   };
 
   function getProductCatalogs() {
-    let endpoint = "http://127.0.0.1:4000/product-catalog";
+    ProductCatalogService.getProductCatalog(prepareSearchQuery()).then((response) => {
+      setSearchResult(response.data);
+    });
+  }
+
+  function prepareSearchQuery() {
     if (!!searchText && !!searchText.trim()) {
-      endpoint += `?q=${searchText}`
+      return `q=${searchText}`;
     } else if(filters.length > 0) {
-      endpoint += `?filterBy=${filters}`
+      return `filterBy=${filters}`
     } else {
-        endpoint += `?filterBy=Curated List`
+      return "filterBy=Curated List";
     }
-    axios
-        .get(endpoint)
-        .then((response) => {
-          setSearchResult(response.data);
-        });
   }
 
   useEffect(() => {
@@ -83,10 +84,16 @@ const ProductCatalogSearch = () => {
           message.error({content: `Unable to identify product`, key: productCode, duration: 2.5})
         })
   }
-  const updateSearchInputResult = (value: any) => {
+
+  const enListAndUpdateSearchInputResult = (value: any) => {
     if (value !== searchText) {
       addProductByCode(value);
     }
+    setShowCamera(false);
+  }
+
+  const updateSearchInputResult = (result: any) => {
+    setSearchResult(result);
     setShowCamera(false);
   }
 
@@ -139,7 +146,7 @@ const ProductCatalogSearch = () => {
             <Button
             type="primary" icon={<CloseOutlined />} onClick={() => setShowBarcodeScanner(false)}>Close</Button>
           </div>
-          <BarcodeScanner data={updateSearchInputResult}/>
+          <BarcodeScanner data={enListAndUpdateSearchInputResult}/>
         </>}</div>
         <div>{ showCamera ? <WebcamCapture data={updateSearchInputResult}/> : null}</div>
         <SelectedFilters></SelectedFilters>

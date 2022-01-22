@@ -1,14 +1,18 @@
 import axios from "axios";
 import { InsertProductDto } from "../dtos/InsertProductDto";
-
-const BASEURL = 'http://127.0.0.1:4000';
+import { COMFY_SERVICE_URL } from "./config";
 
 export const StoreService = {
-    addOrUpdateProduct: (id: string, product: InsertProductDto) => {
-        return axios.post(`${BASEURL}/store/${id}/store-catalog`, product);
+    addOrUpdateProduct: async (id: string, product: InsertProductDto) => {
+        return axios.post(`${COMFY_SERVICE_URL}/store/${id}/store-catalog`, product);
     },
 
-    addProductByCode: (id: string, productCode: string) => {
-        return axios.post(`${BASEURL}/store/${id}/store-catalog/${productCode}`)
-      }
+    addProductByCode: async (id: string, productCode: string) => {
+        return axios.post(`${COMFY_SERVICE_URL}/store/${id}/store-catalog/${productCode}`);
+    },
+
+    getStoreProductCatalog: async (storeId: string) => {
+        return axios.get(`${COMFY_SERVICE_URL}/store/${storeId}`);
+    }
+
 };

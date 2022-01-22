@@ -1,79 +1,72 @@
 import React from "react";
-import Webcam from "react-webcam";
+import WebCam from "react-webcam";
 import { CameraOutlined } from "@ant-design/icons";
-import axios from "axios";
+import Tesseract from "tesseract.js";
+import { ProductCatalogService } from "../services/ProductCatalogService";
 
 const videoConstraints = {
-    width: 1280,
-    height: 720,
-    facingMode: "user"
-  };
-  
-  const WebcamCapture = (props: any) => {
-    const webcamRef: any = React.useRef(null);
+  width: 1280,
+  height: 720,
+  facingMode: "environment"
+};
 
-    const returnImageScanResult = (result: any) => {
-        props.data(result);
-    }
-  
-    const capture = React.useCallback(
-      () => {
-        const imageSrc = webcamRef.current.getScreenshot();
-        const file = dataURLtoFile(imageSrc, 'image.jpg');
-        const data = new FormData();
-        data.append('file', file);
-        const config = {
-            headers: { 'content-type': 'multipart/form-data' }
-        }
+const WebCamCapture = (props: any) => {
+  const webCamRef = React.useRef<WebCam>(null);
 
-        axios.post('http://127.0.0.1:5000/image-search', data, config).then(res => {
-                if(res.data.length > 0) {
-                    returnImageScanResult(res.data[0].className);
-                } else {
-                    returnImageScanResult('');
-                }
-            })
-        .catch(err => console.log(err));
-      }, [webcamRef]
-    );
+  const returnImageScanResult = (result: any) => {
+    props.data(result);
+  }
 
-    function dataURLtoFile(dataurl:any, filename:string) {
+  const sanitizeWords = (text: string) => {
+    return text.split(" ")
+      .map((word) =>
+        word.match(/[A-Za-z0-9]+/g));
+  }
 
-        let arr = dataurl.split(','),
-            mime = arr[0].match(/:(.*?);/)[1],
-            bstr = atob(arr[1]),
-            n = bstr.length,
-            u8arr = new Uint8Array(n);
+  const capture = React.useCallback(
+    async () => {
+      const imageSrc = webCamRef.current?.getScreenshot()!;
 
-        while(n--){
-           u8arr[n] = bstr.charCodeAt(n);
-       }
+      Tesseract.recognize(
+        imageSrc,
+        'eng',
+        { logger: m => console.log(m) }
+      )
+        .then(({ data: { text } }) => {
+          if (text) {
+            ProductCatalogService.getProductCatalog(`multiQuery=${sanitizeWords(text)}`)
+            .then((response) => {
+              returnImageScanResult(response.data);
+            });
+          }
+        });
 
-       return new File([u8arr], filename, {type:mime});
-    }
-  
-    return (
-      <>
-        <Webcam
-          audio={false}
-          height={"100%"}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          width={"100%"}
-          videoConstraints={videoConstraints}
-        />
-        <CameraOutlined 
-            style={{
-                fontSize: 24,
-                color: "#fff",
-                position: "relative",
-                left: "49%",
-                bottom: "40px"
-            }}
-        
-        onClick={capture}/>
-      </>
-    );
-  };
 
-  export default WebcamCapture
+    }, [webCamRef]
+  );
+
+  return (
+    <>
+      <WebCam
+        audio={false}
+        height={"100%"}
+        ref={webCamRef}
+        screenshotFormat="image/jpeg"
+        width={"100%"}
+        videoConstraints={videoConstraints}
+      />
+      <CameraOutlined
+        style={{
+          fontSize: 24,
+          color: "#fff",
+          position: "relative",
+          left: "49%",
+          bottom: "40px"
+        }}
+
+        onClick={capture} />
+    </>
+  );
+};
+
+export default WebCamCapture
