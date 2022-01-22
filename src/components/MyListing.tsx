@@ -19,7 +19,10 @@ const MyListings = () => {
     }
 
     useEffect(() => {
-        getMyListings();
+        //TODO temp fix to avoid multiple calls.
+        if(listings.length == 0) {
+            getMyListings();
+        }
     }, );
 
     return (
