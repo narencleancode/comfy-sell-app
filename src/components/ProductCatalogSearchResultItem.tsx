@@ -1,5 +1,5 @@
 import React from "react"
-import { Button, Tag } from "antd"
+import { Button, Tag, message } from "antd"
 import styled from "styled-components"
 import { ProductAsset } from "./ProductCatalogSearchResult"
 import Title from "antd/lib/typography/Title"
@@ -34,7 +34,12 @@ const ProductCatalogSearchResultItem = ( {searchResultItem, storeId }: Props) =>
       ...searchResultItem,
       storePrice: searchResultItem.maximumRetailPrice,
       quantity: 1
-    });
+    }).then((response) => {
+      message.success({content: `Added product ${searchResultItem.title}`, key: searchResultItem.productCode, duration: 2.5})
+    })
+    .catch(() => {
+      message.error({content: `Unable to identify product`, key: searchResultItem.productCode, duration: 2.5})
+    })
   }
     
   return (<div>
