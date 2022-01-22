@@ -98,11 +98,10 @@ const ProductCatalogSearch = () => {
   }
   const updateSearchInputResult = (value: any) => {
     if (value !== searchText) {
-      setSearchText(value);
       addProductByCode(value);
     }
     setShowCamera(false);
-    }
+  }
 
   const openFilters = (event: React.MouseEvent<HTMLElement>) => {
     setShowFilters(true);
