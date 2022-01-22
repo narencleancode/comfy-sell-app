@@ -1,8 +1,6 @@
-import React, { useEffect } from "react"
-import { useState } from "react"
-import { Button, Input, Tag } from "antd"
+import React from "react"
+import { Button, Tag } from "antd"
 import styled from "styled-components"
-import Incrementor from "./Incrementor"
 import { ProductAsset } from "./ProductCatalogSearchResult"
 import Title from "antd/lib/typography/Title"
 import { StoreService } from "../services/StoreService"
@@ -28,40 +26,17 @@ const ThumbnailImage = styled.img`
   object-fit: cover;
 `
 
-const AlignRight = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`
-
-const ProductCatalogSearchResultItem = ({searchResultItem, storeId}: Props) => {
-  const [showQuantityIncremeter, setShowQuantityIncrementor] = useState(searchResultItem.quantity > 0)
-  const [storePrice, setStorePrice] = useState(searchResultItem.storePrice ?? searchResultItem.maximumRetailPrice);
-  const [quantity, setQuantity] = useState(searchResultItem.quantity ?? 0);
-
-  const saveProduct = (price?: number, qty?: number) => {
-    StoreService.addOrUpdateProduct(storeId, {
-      ...searchResultItem,
-      storePrice: price ?? storePrice,
-      quantity: qty ?? quantity
-    });
-  }
-
-  const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setStorePrice(+event.target.value);
-    saveProduct(+event.target.value, quantity);
-  };
-
-  const handleQuantityChange = (value: number) => {
-    setQuantity(value);
-    if (value > 0) {
-      saveProduct(storePrice, value);
-    }
-  }
+const ProductCatalogSearchResultItem = ( {searchResultItem, storeId }: Props) => {
 
   const addQuantity = (event: React.MouseEvent<HTMLElement>) => {
-    setShowQuantityIncrementor(true);
+    event.preventDefault();
+    StoreService.addOrUpdateProduct(storeId, {
+      ...searchResultItem,
+      storePrice: searchResultItem.maximumRetailPrice,
+      quantity: 1
+    });
   }
-
+    
   return (<div>
     <SearchResultContainer>
               <SearchResultContent>
@@ -77,10 +52,9 @@ const ProductCatalogSearchResultItem = ({searchResultItem, storeId}: Props) => {
                 <Tag color="green">{searchResultItem.subCategory}</Tag>
                 <div style={{ display: "flex", marginTop: "8px", alignItems: "center" }}>
                 <div style={{ width: "50%" }}>{`${searchResultItem.weight} ${searchResultItem.unit}`}</div>
-                <Input type="number" addonBefore={"₹"} style={{ width: "70%", marginBottom: "8px" }} value={storePrice}  onChange={handlePriceChange} />
+                <div>MRP {`₹ ${searchResultItem.maximumRetailPrice}`}</div>
                 </div>
-                { !showQuantityIncremeter && <Button type="primary" style={{ width: "100%", float: "right"}} size={'middle'} onClick={addQuantity}>Add</Button> }
-                { showQuantityIncremeter && <AlignRight><Incrementor product={searchResultItem} onChange={handleQuantityChange} /></AlignRight> }
+                <Button type="primary" style={{ width: "100%", float: "right"}} size={'middle'} onClick={addQuantity} >Add</Button>
               </SearchResultContent>
             </SearchResultContainer>
   </div>
