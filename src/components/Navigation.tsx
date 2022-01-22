@@ -13,7 +13,7 @@ const tabs = [{
 const Navigation = () => {
     return (
         <div>
-            <nav className="navbar fixed-bottom navbar-light bottom-tab-nav" role="navigation">
+            <nav className="navbar fixed-bottom navbar-dark bg-primary bottom-tab-nav" role="navigation">
                 <Nav className="w-100">
                     <div className=" d-flex flex-row justify-content-around w-100">
                         {
