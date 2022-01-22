@@ -85,15 +85,15 @@ const ProductCatalogSearch = () => {
   }
 
   const addProductByCode = (productCode: string) => {
-    message.loading({content: `Adding product ${productCode}`, key: productCode})
+    message.loading({content: `Adding product ${productCode}`, key: productCode, duration: 0})
       StoreService.addProductByCode(storeId, productCode)
         .then((response) => {
           const addedProduct = response.data;
           setSearchResult([addedProduct as never])
-          message.success({content: `Added product ${addedProduct.title}`, key: productCode})
+          message.success({content: `Added product ${addedProduct.title}`, key: productCode, duration: 2.5})
         })
         .catch(() => {
-          message.error({content: `Unable to identify product`, key: productCode})
+          message.error({content: `Unable to identify product`, key: productCode, duration: 2.5})
         })
   }
   const updateSearchInputResult = (value: any) => {
