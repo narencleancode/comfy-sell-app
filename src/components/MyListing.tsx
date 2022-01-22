@@ -1,19 +1,20 @@
 import React, {useEffect, useState} from "react";
 import {Divider, Empty} from "antd";
 import axios from "axios";
-import ProductCatalogSearchResult from "./ProductCatalogSearchResult";
+import  {ProductAsset} from "./ProductCatalogSearchResult";
 import Title from "antd/lib/typography/Title";
+import StoreProductCatalogSearchResultItem from "./StoreProductCatalogSearchResultItem";
 
 const MyListings = () => {
     const storeId = "8888"; // TODO: fetch from authentication
-    const [searchResult, setSearchResult] = useState([]);
+    const [listings, setListings] = useState([]);
 
     function getMyListings() {
-        let endpoint = `http://127.0.0.1:4000/store/${storeId}`;
+        let endpoint = `http://127.0.0.1:4000/store/${storeId}/store-catalog`;
         axios
             .get(endpoint)
             .then((response) => {
-                setSearchResult(response.data.storeCatalogs);
+                setListings(response.data);
             });
     }
 
@@ -23,12 +24,18 @@ const MyListings = () => {
 
     return (
         <div>
-            <h2 style={{textAlign: "center"}}>Product Catalog Digitization</h2>
-            {(!!searchResult && searchResult.length > 0)
+            <h2 style={{textAlign: "center"}}>My Listings</h2>
+            {(!!listings && listings.length > 0)
                 ? (
                     <>
                         <Divider orientation="left">Results</Divider>
-                        <ProductCatalogSearchResult searchResult={searchResult}/>
+                        {listings.map((searchResultItem: ProductAsset) => {
+                            return (
+                                <div key={searchResultItem.productCode}>
+                                    <StoreProductCatalogSearchResultItem storeId={storeId} searchResultItem={searchResultItem} />
+                                </div>
+                            );
+                        })}
                     </>
                 )
                 : (<Empty description={<Title level={3}>No results found</Title>}/>)

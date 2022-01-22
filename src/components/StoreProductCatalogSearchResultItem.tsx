@@ -82,7 +82,7 @@ const StoreProductCatalogSearchResultItem = ({searchResultItem, storeId}: Props)
                 <div style={{ width: "50%" }}>{`${searchResultItem.weight} ${searchResultItem.unit}`}</div>
                 <Input type="number" addonBefore={"₹"} style={{ width: "70%", marginBottom: "8px" }} value={storePrice}  onChange={handlePriceChange} />
                 </div>
-                { <Button type="primary" style={{ width: "100%", float: "right"}} size={'middle'} onClick={addQuantity}>Add</Button> }
+                { !isQuantityPresent && <Button type="primary" style={{ width: "100%", float: "right"}} size={'middle'} onClick={addQuantity}>Add</Button> }
                 { isQuantityPresent && <AlignRight><Incrementor product={searchResultItem} onChange={handleQuantityChange} /></AlignRight> }
               </SearchResultContent>
             </SearchResultContainer>
