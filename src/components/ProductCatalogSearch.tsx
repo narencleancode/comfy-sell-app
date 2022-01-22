@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Button, Divider, Drawer, Input, Tooltip } from "antd";
-import { CameraOutlined, FilterOutlined, ScanOutlined } from "@ant-design/icons";
+import { Button, Divider, Drawer, Input, Tooltip, message, Empty } from "antd";
+import { CameraOutlined, FilterOutlined, ScanOutlined, CloseOutlined } from "@ant-design/icons";
 import axios from "axios";
 import ProductCatalogSearchResult from "./ProductCatalogSearchResult";
 import BarcodeScanner from "./BarcodeScanner";
@@ -9,6 +9,8 @@ import FilterSelection from "./FilterSelection";
 import SelectedFilters from "./SelectedFilters";
 import FilterContext from "../contexts/FilterContext";
 import WebcamCapture from "./ProductImageCapture";
+import Title from "antd/lib/typography/Title";
+import { StoreService } from "../services/StoreService";
 
 const { Search } = Input;
 
@@ -80,11 +82,26 @@ const ProductCatalogSearch = () => {
 
   const handleSearch = (value: string) => {
     setSearchText(value);
-  } 
+  }
+
+  const addProductByCode = (productCode: string) => {
+    message.loading({content: `Adding product ${productCode}`, key: productCode})
+      StoreService.addProductByCode(storeId, productCode)
+        .then((response) => {
+          const addedProduct = response.data;
+          setSearchResult([addedProduct as never])
+          message.success({content: `Added product ${addedProduct.title}`, key: productCode})
+        })
+        .catch(() => {
+          message.error({content: `Unable to identify product`, key: productCode})
+        })
+  }
   const updateSearchInputResult = (value: any) => {
-     setSearchText(value);
-     setShowBarcodeScanner(false);
-     setShowCamera(false);
+    if (value !== searchText) {
+      setSearchText(value);
+      addProductByCode(value);
+    }
+    setShowCamera(false);
     }
 
   const openFilters = (event: React.MouseEvent<HTMLElement>) => {
@@ -121,6 +138,7 @@ const ProductCatalogSearch = () => {
             enterButton
             size="large"
             suffix={suffix}
+            value={searchText}
             onSearch={handleSearch}
             onChange={handleChange}
           />
@@ -130,12 +148,24 @@ const ProductCatalogSearch = () => {
           </Tooltip>
 
         </SearchContainer>
-
-        <SelectedFilters></SelectedFilters>
-        <Divider orientation="left">Results</Divider>
-        <div>{ showBarcodeScanner ? <BarcodeScanner data={updateSearchInputResult}/> : null}</div>
+        <div>{ showBarcodeScanner && <>
+          <div style={{textAlign: 'right', marginBottom: '16px'}}>
+            <Button
+            type="primary" icon={<CloseOutlined />} onClick={() => setShowBarcodeScanner(false)}>Close</Button>
+          </div>
+          <BarcodeScanner data={updateSearchInputResult}/>
+        </>}</div>
         <div>{ showCamera ? <WebcamCapture data={updateSearchInputResult}/> : null}</div>
-        <ProductCatalogSearchResult searchResult={searchResult} />
+        <SelectedFilters></SelectedFilters>
+        { (!!searchResult && searchResult.length > 0)
+          ? (
+            <>
+              <Divider orientation="left">Results</Divider>
+              <ProductCatalogSearchResult searchResult={searchResult} />
+            </>
+          )
+          : (<Empty description={<Title level={3}>No results found</Title>} />) 
+        }
         <Drawer
             title="Filters"
             placement="bottom"
