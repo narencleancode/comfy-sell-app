@@ -45,13 +45,13 @@ const ProductCatalogSearch = () => {
 
   function getProductCatalogs() {
     let endpoint = "http://127.0.0.1:4000/product-catalog";
-    if (filters.find(filter => filter === 'Curated List')) {
-      endpoint += `?filterBy=Curated List`
-    } else if (!!searchText && !!searchText.trim()) {
+    if (!!searchText && !!searchText.trim()) {
       endpoint += `?q=${searchText}`
     } else if(filters.length > 0) {
       endpoint += `?filterBy=${filters}`
-    } 
+    } else {
+        endpoint += `?filterBy=Curated List`
+    }
     axios
         .get(endpoint)
         .then((response) => {
@@ -59,26 +59,13 @@ const ProductCatalogSearch = () => {
         });
   }
 
-  function getMyListings() {
-    let endpoint = `http://127.0.0.1:4000/store/${storeId}`;
-    axios
-        .get(endpoint)
-        .then((response) => {
-          setSearchResult(response.data.storeCatalogs);
-        });
-  }
-
   useEffect(() => {
-    if(filters.find(filter => filter === 'Listed Products')) {
-      getMyListings();
-    } else {
       getProductCatalogs();
-    }
-  }, [searchText, filters]);
+  }, [searchText]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(event.target.value);
-  } 
+  }
 
   const handleSearch = (value: string) => {
     setSearchText(value);
@@ -116,14 +103,14 @@ const ProductCatalogSearch = () => {
       }}
       onClick={handleSuffixClick}
     />
-    <ScanOutlined 
+    <ScanOutlined
       style={{
         fontSize: 16,
         color: "#1890ff",
         marginLeft: "10px"
       }}
     onClick={handleBarcodeScanner}
-    /> 
+    />
     </React.Fragment>
   );
 
@@ -163,7 +150,7 @@ const ProductCatalogSearch = () => {
               <ProductCatalogSearchResult searchResult={searchResult} />
             </>
           )
-          : (<Empty description={<Title level={3}>No results found</Title>} />) 
+          : (<Empty description={<Title level={3}>No results found</Title>} />)
         }
         <Drawer
             title="Filters"

@@ -5,11 +5,6 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 import FilterContext from "../contexts/FilterContext";
 
-const AVAILABLE_FILTERS = [
-    'Listed Products',
-    'Curated List'
-]
-
 const AVAILABLE_CATEGORIES = [
     'Baby Care',
     'Beverages',
@@ -59,17 +54,6 @@ const FilterSelection = () => {
     return (
         <React.Fragment>
             <Row gutter={16}>
-                <Col flex={2}>
-                    <Title level={3}>Lists</Title>
-                    {
-                        AVAILABLE_FILTERS.map(filter =>
-                        (<FilterItem><Checkbox
-                            onChange={toggleFilter(filter)}
-                            checked={filters.indexOf(filter) > -1}
-                        >{filter}</Checkbox></FilterItem>)
-                        )
-                    }
-                </Col>
                 <Col flex={3}>
                     <Title level={3}>Categories</Title>
                     {
