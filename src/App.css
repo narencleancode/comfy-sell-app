@@ -15,6 +15,11 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
+.ant-message {
+    top: initial;
+    bottom: 8px;
+}
+
 .menu {
     border-top: 1px solid #ccc;
     justify-content: space-evenly;
