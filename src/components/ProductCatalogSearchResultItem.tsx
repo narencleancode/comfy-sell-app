@@ -34,19 +34,19 @@ const ProductCatalogSearchResultItem = ( {searchResultItem, storeId }: Props) =>
   const buttonStyle: React.CSSProperties = { width: '128px', float: 'right'};
     
   return (
-    <Row gutter={16}>
-      <Col span={10}>
+    <Row gutter={16} style={{width: '100%', margin: 0}} wrap={false}>
+      <Col flex={'140px'} style={{paddingLeft: 0}}>
         <Image
           src={searchResultItem.image.thumbnailUrl}
           alt={searchResultItem.title}
-          width={'100%'}
+          width="100%"
           height={140}
           preview={{src: searchResultItem.image.url}}
           style={{objectFit: 'cover', borderRadius: '3px'}}
           placeholder
         />
       </Col>
-      <Col span={14}>
+      <Col flex="auto" style={{paddingRight: 0}}>
         <Title level={5}>{searchResultItem.title}</Title>
         <Tag color="magenta">{searchResultItem.category}</Tag>
         <Tag color="green">{searchResultItem.subCategory}</Tag>
