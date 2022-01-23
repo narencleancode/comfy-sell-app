@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Button, Tag, message, Row, Col, Image } from "antd"
 import { ProductAsset } from "./ProductCatalogSearchResult"
 import Title from "antd/lib/typography/Title"
@@ -10,20 +10,28 @@ type Props = {
 }
 
 const ProductCatalogSearchResultItem = ( {searchResultItem, storeId }: Props) => {
+  const [itemAdded, setItemAdded] = useState(false);
+  const [itemAddLoading, setItemAddLoading] = useState(false);
 
   const addQuantity = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
+    setItemAddLoading(true);
     StoreService.addOrUpdateProduct(storeId, {
       ...searchResultItem,
       storePrice: searchResultItem.maximumRetailPrice,
       quantity: 1
     }).then((response) => {
       message.success({content: `Added product ${searchResultItem.title}`, key: searchResultItem.productCode, duration: 2.5})
+      setItemAddLoading(false)
+      setItemAdded(true)
     })
     .catch(() => {
       message.error({content: `Unable to identify product`, key: searchResultItem.productCode, duration: 2.5})
+      setItemAddLoading(false);
     })
   }
+  
+  const buttonStyle: React.CSSProperties = { width: '128px', float: 'right'};
     
   return (
     <Row gutter={16}>
@@ -46,7 +54,20 @@ const ProductCatalogSearchResultItem = ( {searchResultItem, storeId }: Props) =>
         <div style={{ width: "50%" }}>{`${searchResultItem.weight} ${searchResultItem.unit}`}</div>
         <div>MRP {`₹ ${searchResultItem.maximumRetailPrice}`}</div>
         </div>
-        <Button type="primary" style={{ width: "100%", float: "right"}} size={'middle'} onClick={addQuantity} >Add</Button>
+        {
+          itemAdded
+          ? (<Button
+              disabled
+              type="primary"
+              style={buttonStyle}
+              size={'middle'}>Added</Button>)
+          : (<Button
+              type="primary"
+              style={buttonStyle}
+              size={'middle'}
+              onClick={addQuantity}
+              loading={itemAddLoading}>Add</Button>)
+        }
       </Col>
     </Row>
   )
