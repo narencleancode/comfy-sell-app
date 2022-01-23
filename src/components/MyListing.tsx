@@ -4,13 +4,14 @@ import axios from "axios";
 import  {ProductAsset} from "./ProductCatalogSearchResult";
 import Title from "antd/lib/typography/Title";
 import StoreProductCatalogSearchResultItem from "./StoreProductCatalogSearchResultItem";
+import { COMFY_SERVICE_URL, STORE_ID } from "../services/config";
 
 const MyListings = () => {
-    const storeId = "8888"; // TODO: fetch from authentication
+    const storeId = STORE_ID;
     const [listings, setListings] = useState([]);
 
     function getMyListings() {
-        let endpoint = `http://127.0.0.1:4000/store/${storeId}/store-catalog`;
+        let endpoint = `${COMFY_SERVICE_URL}/store/${storeId}/store-catalog`;
         axios
             .get(endpoint)
             .then((response) => {
