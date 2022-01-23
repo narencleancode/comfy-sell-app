@@ -67,7 +67,11 @@ const ProductCatalogSearch = () => {
     getProductCatalog()
         .then((response) => {
           if (!!response.data && response.data.length > 0) {
-            setSearchResult([...searchResult, ...response.data]);
+            if (page === 1) {
+              setSearchResult(response.data);
+            } else {
+              setSearchResult([...searchResult, ...response.data]);
+            }
             setHasMore(true);
           } else {
             setHasMore(false)
