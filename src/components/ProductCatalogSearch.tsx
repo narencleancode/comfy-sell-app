@@ -51,14 +51,6 @@ const ProductCatalogSearch = () => {
     return ProductCatalogService.getProductCatalog(prepareSearchQuery())
   }
 
-  function loadProductCatalogs() {
-    setPage(1);
-    setHasMore(true);
-    getProductCatalog().then((response) => {
-      setSearchResult(response.data);
-    });
-  }
-
   function prepareSearchQuery() {
     let query = `page=${page}`;
     if (!!searchText && !!searchText.trim()) {
@@ -71,29 +63,36 @@ const ProductCatalogSearch = () => {
     return query;
   }
 
+  function loadPage() {
+    getProductCatalog()
+        .then((response) => {
+          if (!!response.data && response.data.length > 0) {
+            setSearchResult([...searchResult, ...response.data]);
+            setHasMore(true);
+          } else {
+            setHasMore(false)
+          }
+          setLoading(false);
+        });
+  }
+
   function loadMore() {
     if (loading) {
       return;
     }
     setPage(page + 1);
     setLoading(true);
-    setTimeout(() => {
-      getProductCatalog()
-          .then((response) => {
-            if (!!response.data && response.data.length > 0) {
-              setSearchResult([...searchResult, ...response.data]);
-              setHasMore(true);
-            } else {
-              setHasMore(false)
-            }
-            setLoading(false);
-          });
-    }, 2000)
   }
 
   useEffect(() => {
-      loadProductCatalogs();
+      setSearchResult([]);
+      setPage(1);
+      loadPage()
   }, [searchText]);
+
+  useEffect(() => {
+    loadPage()
+  }, [page])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(event.target.value);
