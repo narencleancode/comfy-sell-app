@@ -26,12 +26,15 @@ const SearchContainer = styled.div`
 const ProductCatalogSearch = () => {
   const storeId = STORE_ID;
   const [searchText, setSearchText] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
+  const [searchResult, setSearchResult] = useState<any[]>([]);
   const [showBarcodeScanner, setShowBarcodeScanner] = React.useState(false)
   const [showFilters, setShowFilters] = React.useState(false);
   const [filters, setFilters] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [showCamera, setShowCamera] = React.useState(false)
+  const [hasMore, setHasMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const handleSuffixClick = (event: React.MouseEvent<HTMLElement>) => {
     console.log("Camera Clicked!!")
@@ -44,24 +47,52 @@ const ProductCatalogSearch = () => {
     setShowBarcodeScanner(!showBarcodeScanner);
   };
 
-  function getProductCatalogs() {
-    ProductCatalogService.getProductCatalog(prepareSearchQuery()).then((response) => {
+  function getProductCatalog() {
+    return ProductCatalogService.getProductCatalog(prepareSearchQuery())
+  }
+
+  function loadProductCatalogs() {
+    setPage(1);
+    setHasMore(true);
+    getProductCatalog().then((response) => {
       setSearchResult(response.data);
     });
   }
 
   function prepareSearchQuery() {
+    let query = `page=${page}`;
     if (!!searchText && !!searchText.trim()) {
-      return `q=${searchText}`;
+      query += `&q=${searchText}`;
     } else if(filters.length > 0) {
-      return `filterBy=${filters}`
+      query += `&filterBy=${filters}`
     } else {
-      return "filterBy=Curated List";
+      query += "&filterBy=Curated List";
     }
+    return query;
+  }
+
+  function loadMore() {
+    if (loading) {
+      return;
+    }
+    setPage(page + 1);
+    setLoading(true);
+    setTimeout(() => {
+      getProductCatalog()
+          .then((response) => {
+            if (!!response.data && response.data.length > 0) {
+              setSearchResult([...searchResult, ...response.data]);
+              setHasMore(true);
+            } else {
+              setHasMore(false)
+            }
+            setLoading(false);
+          });
+    }, 2000)
   }
 
   useEffect(() => {
-      getProductCatalogs();
+      loadProductCatalogs();
   }, [searchText]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -154,7 +185,7 @@ const ProductCatalogSearch = () => {
           ? (
             <>
               <Divider orientation="left">Results</Divider>
-              <ProductCatalogSearchResult searchResult={searchResult} />
+              <ProductCatalogSearchResult hasMore={hasMore} next={loadMore} searchResult={searchResult} />
             </>
           )
           : (<Empty description={<Title level={3}>No results found</Title>} />)
