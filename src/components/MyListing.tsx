@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Divider, Empty, List} from "antd";
+import { Empty, List } from "antd";
 import axios from "axios";
 import  {ProductAsset} from "./ProductCatalogSearchResult";
 import Title from "antd/lib/typography/Title";
@@ -27,22 +27,19 @@ const MyListings = () => {
 
     return (
         <div>
-            <h2 style={{textAlign: "center"}}>My Listings</h2>
+            <Title level={4}>My Listings</Title>
             {(!!listings && listings.length > 0)
                 ? (
-                    <>
-                        <Divider orientation="left">Results</Divider>
-                        <List
-                            dataSource={listings}
-                            renderItem={(listingItem: ProductAsset) => {
-                                return (
-                                    <List.Item key={listingItem.productCode}>
-                                        <StoreProductCatalogSearchResultItem storeId={storeId} searchResultItem={listingItem} />
-                                    </List.Item>
-                                );
-                            }}
-                        />
-                    </>
+                    <List
+                        dataSource={listings}
+                        renderItem={(listingItem: ProductAsset) => {
+                            return (
+                                <List.Item key={listingItem.productCode}>
+                                    <StoreProductCatalogSearchResultItem storeId={storeId} searchResultItem={listingItem} />
+                                </List.Item>
+                            );
+                        }}
+                    />
                 )
                 : (<Empty description={<Title level={3}>No results found</Title>}/>)
             }

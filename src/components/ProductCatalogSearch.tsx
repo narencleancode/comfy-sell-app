@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Button, Divider, Drawer, Input, Tooltip, message, Empty } from "antd";
-import { CameraOutlined, FilterOutlined, ScanOutlined, CloseOutlined } from "@ant-design/icons";
+import { Button, Divider, Drawer, Input, Tooltip, message, Empty, BackTop, Typography } from "antd";
+import { CameraOutlined, ControlOutlined, ScanOutlined, CloseOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import ProductCatalogSearchResult from "./ProductCatalogSearchResult";
 import BarcodeScanner from "./BarcodeScanner";
 import FilterSelection from "./FilterSelection";
@@ -154,10 +154,9 @@ const ProductCatalogSearch = () => {
   return (
     <div>
       <FilterContext.Provider value={{filters, categories, setFilters, setCategories}}>
-        <h2 style={{ textAlign: "center" }}>Product Catalog Digitization</h2>
         <SearchContainer>
           <Search
-            placeholder="input search text"
+            placeholder="Search text"
             enterButton
             size="large"
             suffix={suffix}
@@ -165,10 +164,6 @@ const ProductCatalogSearch = () => {
             onSearch={handleSearch}
             onChange={handleChange}
           />
-
-          <Tooltip title="Filter">
-            <Button type="default" size="large" icon={<FilterOutlined />} onClick={openFilters} />
-          </Tooltip>
 
         </SearchContainer>
         <div>{ showBarcodeScanner && <>
@@ -183,7 +178,11 @@ const ProductCatalogSearch = () => {
         { (!!searchResult && searchResult.length > 0)
           ? (
             <>
-              <Divider orientation="left">Results</Divider>
+              <Divider style={{marginTop: 0, marginBottom: 8}}></Divider>
+              <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                  <Title level={5} type="secondary">Results</Title>
+                  <Button type="default" size="small" icon={<ControlOutlined />} onClick={openFilters}>Add Filter</Button>
+              </div>
               <ProductCatalogSearchResult hasMore={hasMore} next={loadMore} searchResult={searchResult} />
             </>
           )
@@ -199,6 +198,7 @@ const ProductCatalogSearch = () => {
           >
             <FilterSelection/>
           </Drawer>
+        <BackTop style={{width: 'auto'}}><Button type="link" size="large" icon={<ArrowUpOutlined />} style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)', background: '#fff'}}>Top</Button></BackTop>
       </FilterContext.Provider>
     </div>
   );
