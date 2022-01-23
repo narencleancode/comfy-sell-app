@@ -1,36 +1,36 @@
 import React from 'react';
-import {Nav, NavItem} from 'reactstrap';
-import {NavLink} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Menu } from 'antd';
+import { SearchOutlined, ShopOutlined } from '@ant-design/icons';
 
 const tabs = [{
     route: "/search",
-    label: "Search"
+    label: "Search",
+    icon: <SearchOutlined />
 }, {
     route: "/listings",
-    label: "My Listings"
+    label: "My Listings",
+    icon: <ShopOutlined />
 }]
 
 const Navigation = () => {
+    const location = useLocation()
+    const navigate = useNavigate()
+    const navigateToPage = ((e: any) => {
+        navigate(e.key);
+    })
     return (
-        <div>
-            <nav className="navbar fixed-bottom navbar-dark bg-primary bottom-tab-nav" role="navigation">
-                <Nav className="w-100">
-                    <div className=" d-flex flex-row justify-content-around w-100">
-                        {
-                            tabs.map((tab, index) => (
-                                <NavItem key={`tab-${index}`}>
-                                    <NavLink to={tab.route} className="nav-link bottom-nav-link" >
-                                        <div
-                                            className="row d-flex flex-column justify-content-center align-items-center">
-                                            <div className="bottom-tab-label">{tab.label}</div>
-                                        </div>
-                                    </NavLink>
-                                </NavItem>
-                            ))
-                        }
-                    </div>
-                </Nav>
-            </nav>
+        <div style={{position: 'fixed', bottom: 0, left: 0, width: '100%', background: '#ffffff', zIndex: 10}}>
+            <Menu 
+            mode='horizontal'
+            selectedKeys={[location.pathname]}
+            className='menu'
+            onClick={navigateToPage}
+            >
+                {tabs.map(tab => (
+                    <Menu.Item icon={tab.icon} key={tab.route}>{tab.label}</Menu.Item>
+                ))}
+            </Menu>
         </div>
     )
 }
