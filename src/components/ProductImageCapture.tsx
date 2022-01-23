@@ -1,5 +1,6 @@
 import React from "react";
 import WebCam from "react-webcam";
+import { message } from "antd"
 import { CameraOutlined } from "@ant-design/icons";
 import Tesseract from "tesseract.js";
 import { ProductCatalogService } from "../services/ProductCatalogService";
@@ -20,13 +21,14 @@ const WebCamCapture = (props: any) => {
   const sanitizeWords = (text: string) => {
     return text.split(" ")
       .map((word) =>
-        word.match(/[A-Za-z0-9]+/g));
+        word.match(/[A-Za-z]+/g));
   }
 
   const capture = React.useCallback(
     async () => {
       const imageSrc = webCamRef.current?.getScreenshot()!;
-
+      message.success({content: `Image recognizing`, key: "Image", duration: 2.5});
+         
       Tesseract.recognize(
         imageSrc,
         'eng',
@@ -34,6 +36,7 @@ const WebCamCapture = (props: any) => {
       )
         .then(({ data: { text } }) => {
           if (text) {
+          
             ProductCatalogService.getProductCatalog(`multiQuery=${sanitizeWords(text)}`)
             .then((response) => {
               returnImageScanResult(response.data);
@@ -49,10 +52,10 @@ const WebCamCapture = (props: any) => {
     <>
       <WebCam
         audio={false}
-        height={"100%"}
+        height={"500"}
         ref={webCamRef}
         screenshotFormat="image/jpeg"
-        width={"100%"}
+        width={"400"}
         videoConstraints={videoConstraints}
       />
       <CameraOutlined

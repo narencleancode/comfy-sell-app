@@ -177,7 +177,14 @@ const ProductCatalogSearch = () => {
           </div>
           <BarcodeScanner data={enListAndUpdateSearchInputResult}/>
         </>}</div>
-        <div>{ showCamera ? <WebcamCapture data={updateSearchInputResult}/> : null}</div>
+        <div>{showCamera ?
+          <>
+            <div style={{ textAlign: 'right', marginBottom: '16px' }}>
+              <Button
+                type="primary" icon={<CloseOutlined />} onClick={() => setShowCamera(false)}>Close</Button>
+            </div>
+            <WebcamCapture data={updateSearchInputResult} /> </>
+          : <></>}</div>
         <SelectedFilters></SelectedFilters>
         { (!!searchResult && searchResult.length > 0)
           ? (
