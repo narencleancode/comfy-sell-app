@@ -11,6 +11,7 @@ const BarcodeScanner = (props: any) => {
   return (
     <>
       <BarcodeScannerComponent
+        facingMode="environment"
         onUpdate={(err, result:any) => {
           if (result) returnBarcodeResult(result.text);
           else setData("Not Found");
