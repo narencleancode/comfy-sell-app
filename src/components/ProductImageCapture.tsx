@@ -52,10 +52,10 @@ const WebCamCapture = (props: any) => {
     <>
       <WebCam
         audio={false}
-        height={"500"}
+        height={"100%"}
         ref={webCamRef}
         screenshotFormat="image/jpeg"
-        width={"400"}
+        width={"100%"}
         videoConstraints={videoConstraints}
       />
       <CameraOutlined
