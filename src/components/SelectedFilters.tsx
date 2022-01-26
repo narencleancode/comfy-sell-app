@@ -1,5 +1,6 @@
 import { Tag } from "antd";
 import React, { useContext } from "react";
+import styled from "styled-components";
 import FilterContext from "../contexts/FilterContext";
 
 
@@ -17,11 +18,15 @@ const SelectedFilters = () => {
         }
     }
 
+    const SelectedFiltersContainer = styled.div`
+        margin-bottom: 8px 
+    `
+
     return (
-        <>
+        <SelectedFiltersContainer>
             {filters?.map(filter => <Tag closable onClose={removeFilter(filter)}>{filter}</Tag>)}
             {categories?.map(category => <Tag closable onClose={removeCategory(category)}>{category}</Tag>)}
-        </>
+        </SelectedFiltersContainer>
     )
 }
 
