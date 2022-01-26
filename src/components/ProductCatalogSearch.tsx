@@ -60,6 +60,9 @@ const ProductCatalogSearch = () => {
     } else {
       query += "&filterBy=Curated List";
     }
+    if(categories.length > 0) {
+      query += '&categories=' + categories.map(encodeURIComponent).join('&categories=');
+    }
     return query;
   }
 
@@ -92,7 +95,7 @@ const ProductCatalogSearch = () => {
       setSearchResult([]);
       setPage(1);
       loadPage()
-  }, [searchText]);
+  }, [searchText, categories]);
 
   useEffect(() => {
     loadPage()
