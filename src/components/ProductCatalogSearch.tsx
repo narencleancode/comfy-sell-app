@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Button, Divider, Drawer, Input, Tooltip, message, Empty, BackTop, Typography } from "antd";
+import { Button, Divider, Input, message, Empty, BackTop } from "antd";
 import { CameraOutlined, ControlOutlined, ScanOutlined, CloseOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import ProductCatalogSearchResult from "./ProductCatalogSearchResult";
 import BarcodeScanner from "./BarcodeScanner";
@@ -202,16 +202,7 @@ const ProductCatalogSearch = () => {
           )
           : (<Empty description={<Title level={3}>No results found</Title>} />)
         }
-        <Drawer
-            title="Filters"
-            placement="bottom"
-            closable={true}
-            onClose={() => setShowFilters(false)}
-            visible={showFilters}
-            size="large"
-          >
-            <FilterSelection/>
-          </Drawer>
+        <FilterSelection visible={showFilters} onClose={() => setShowFilters(false)}/>
         <BackTop style={{width: 'auto'}}><Button type="link" size="large" icon={<ArrowUpOutlined />} style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)', background: '#fff'}}>Top</Button></BackTop>
       </FilterContext.Provider>
     </div>

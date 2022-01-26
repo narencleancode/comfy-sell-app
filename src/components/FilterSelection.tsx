@@ -1,5 +1,6 @@
-import { Checkbox, Col, Row } from "antd";
+import { Checkbox, Col, Row, Drawer, Button } from "antd";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
+import { DeleteOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import React, { useContext } from "react";
 import styled from "styled-components";
@@ -24,9 +25,14 @@ const AVAILABLE_CATEGORIES = [
     'Pet Care & Food',
     'Ready to Eat',
     'Staples'
-]
+];
 
-const FilterSelection = () => {
+type props = {
+    visible: boolean;
+    onClose: () => void
+}
+
+const FilterSelection = ({ visible, onClose }: props) => {
     const { filters, setFilters, categories, setCategories } = useContext(FilterContext);
 
     const toggle = (name: string, data: string[], setter: (data: string[]) => void) => {
@@ -46,27 +52,43 @@ const FilterSelection = () => {
         return toggle(category, categories, setCategories);
     }
 
+    const clearAll = () => {
+        setCategories([])
+    }
+
     const FilterItem = styled.div`
     padding: 10px 0;
     border-bottom: 1px solid #ddd;
     `
 
     return (
-        <React.Fragment>
-            <Row gutter={16}>
-                <Col flex={3}>
-                    <Title level={3}>Categories</Title>
-                    {
-                        AVAILABLE_CATEGORIES.map(category =>
-                        (<FilterItem><Checkbox
-                            onChange={toggleCategory(category)}
-                            checked={categories.indexOf(category) > -1}
-                        >{category}</Checkbox></FilterItem>)
-                        )
-                    }
-                </Col>
-            </Row>
-        </React.Fragment>
+        <Drawer
+            title="Filters"
+            placement="bottom"
+            closable={true}
+            onClose={onClose}
+            visible={visible}
+            size="large"
+            extra={
+            <Button danger icon={<DeleteOutlined />} onClick={clearAll}>Clear all</Button>
+            }
+        >
+            <React.Fragment>
+                <Row gutter={16}>
+                    <Col flex={3}>
+                        <Title level={3}>Categories</Title>
+                        {
+                            AVAILABLE_CATEGORIES.map(category =>
+                            (<FilterItem><Checkbox
+                                onChange={toggleCategory(category)}
+                                checked={categories.indexOf(category) > -1}
+                            >{category}</Checkbox></FilterItem>)
+                            )
+                        }
+                    </Col>
+                </Row>
+            </React.Fragment>
+        </Drawer>
     )
 }
 
