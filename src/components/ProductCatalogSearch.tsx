@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Button, Divider, Input, message, Empty, BackTop } from "antd";
+import { Button, Divider, Input, message, Empty, BackTop, Popover, Image } from "antd";
 import { CameraOutlined, ControlOutlined, ScanOutlined, CloseOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import ProductCatalogSearchResult from "./ProductCatalogSearchResult";
 import BarcodeScanner from "./BarcodeScanner";
@@ -35,12 +35,25 @@ const ProductCatalogSearch = () => {
   const [hasMore, setHasMore] = useState(false);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [popOverVisible, setPopOverVisible] = useState(false);
+  const [webCamType, setWebCamType] = useState("OCR");
 
-  const handleSuffixClick = (event: React.MouseEvent<HTMLElement>) => {
-    console.log("Camera Clicked!!")
+  
+  const showWebCamera = () => {
+    setPopOverVisible(!popOverVisible);
     setShowBarcodeScanner(false);
-    setShowCamera(!showCamera);
+    setShowCamera(!showCamera); 
+  }
+  
+  const handleImageOCRScanner = (event: React.MouseEvent<HTMLElement>) => {
+    setWebCamType("OCR"); 
+    showWebCamera();
   };
+
+  const handleImageScanner = (event: React.MouseEvent<HTMLElement>) => {
+    setWebCamType("IMG");
+    showWebCamera();
+  }
 
   const handleBarcodeScanner = (event: React.MouseEvent<HTMLElement>) => {
     setShowCamera(false);
@@ -137,16 +150,29 @@ const ProductCatalogSearch = () => {
   const openFilters = (event: React.MouseEvent<HTMLElement>) => {
     setShowFilters(true);
   }
+  
+  const content = (
+    <div style={{ display: "flex", alignItems: "center"}}>
+      <p style={{  }}>
+        <img src="/ocr.svg" width="70px" height="70px" onClick={handleImageOCRScanner} />
+      </p>
+      <p> 
+        <img src="/images.png" width="70px" height="70px" onClick={handleImageScanner} />
+      </p>
+    </div>
+  );
 
   const suffix = (
     <React.Fragment>
-    <CameraOutlined
-      style={{
-        fontSize: 16,
-        color: "#1890ff",
-      }}
-      onClick={handleSuffixClick}
-    />
+      <Popover visible={popOverVisible} content={content} trigger="click" title="Identify Product">
+        <CameraOutlined
+          style={{
+            fontSize: 16,
+            color: "#1890ff",
+          }}
+          onClick={() => {setPopOverVisible(!popOverVisible)}}
+        />
+      </Popover>
     <ScanOutlined
       style={{
         fontSize: 16,
@@ -186,7 +212,7 @@ const ProductCatalogSearch = () => {
               <Button
                 type="primary" icon={<CloseOutlined />} onClick={() => setShowCamera(false)}>Close</Button>
             </div>
-            <WebcamCapture data={updateSearchInputResult} /> </>
+            <WebcamCapture webCamType={webCamType} updateSearchText={handleSearch} data={updateSearchInputResult} /> </>
           : <></>}</div>
         <SelectedFilters></SelectedFilters>
         { (!!searchResult && searchResult.length > 0)

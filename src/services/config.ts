@@ -1,3 +1,5 @@
-export const COMFY_SERVICE_URL = process.env.COMFY_SELL_BACKEND_URL || '';
+export const COMFY_SERVICE_URL = "http://localhost:5000";
+
+export const COMFY_IMAGE_RECOGNITION_SERVICE_URL = "http://localhost:4000";
 
 export const STORE_ID = "8888";
