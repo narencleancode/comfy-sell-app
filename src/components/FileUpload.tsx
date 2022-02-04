@@ -1,14 +1,16 @@
 import { Upload, message, Button, Space } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import React from "react";
+import { COMFY_SERVICE_URL, STORE_ID } from "../services/config";
 
 const FileUploadButton = () => {
+    const storeId = STORE_ID;
+    let endpoint = `${COMFY_SERVICE_URL}/store/${storeId}/bulk-upload`;
     const [state, setState] = React.useState(false);
     
-    let progressBar = true;
     const params = {
     name: 'file',
-    action: 'http://localhost:4000/store/bulk-upload',
+    action: endpoint,
     showUploadList: true,
     maxCount: 1,
     progress: {
