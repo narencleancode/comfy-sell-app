@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Button, Divider, Input, message, Empty, BackTop, Popover, Image } from "antd";
-import { CameraOutlined, ControlOutlined, ScanOutlined, CloseOutlined, ArrowUpOutlined } from "@ant-design/icons";
+import { CameraOutlined, ControlOutlined, ScanOutlined, CloseOutlined, ArrowUpOutlined, AudioOutlined } from "@ant-design/icons";
 import ProductCatalogSearchResult from "./ProductCatalogSearchResult";
 import BarcodeScanner from "./BarcodeScanner";
 import FilterSelection from "./FilterSelection";
@@ -13,6 +13,7 @@ import { StoreService } from "../services/StoreService";
 import { ProductCatalogService } from "../services/ProductCatalogService";
 import { STORE_ID } from "../services/config";
 import FileUploadButton from "./FileUpload";
+import VoiceRecorder from "./VoiceRecorder";
 
 const { Search } = Input;
 
@@ -38,6 +39,7 @@ const ProductCatalogSearch = () => {
   const [loading, setLoading] = useState(false);
   const [popOverVisible, setPopOverVisible] = useState(false);
   const [webCamType, setWebCamType] = useState("OCR");
+  const [showRecorder, setShowRecorder] = useState(false);
 
   
   const showWebCamera = () => {
@@ -60,6 +62,10 @@ const ProductCatalogSearch = () => {
     setShowCamera(false);
     setShowBarcodeScanner(!showBarcodeScanner);
   };
+
+  const handleVoiceInput = (event: React.MouseEvent<HTMLElement>) => {
+    setShowRecorder(true);
+  }
 
   function getProductCatalog() {
     return ProductCatalogService.getProductCatalog(prepareSearchQuery())
@@ -182,6 +188,15 @@ const ProductCatalogSearch = () => {
       }}
     onClick={handleBarcodeScanner}
     />
+    <AudioOutlined 
+    style={{
+      fontSize: 16,
+      color: "#1890ff",
+      marginLeft: "10px"
+    }}
+    onClick={handleVoiceInput}
+
+    />
     </React.Fragment>
   );
 
@@ -215,7 +230,16 @@ const ProductCatalogSearch = () => {
             </div>
             <WebcamCapture webCamType={webCamType} updateSearchText={handleSearch} data={updateSearchInputResult} /> </>
           : <></>}</div>
-          <FileUploadButton/>
+        {showRecorder && (
+          <>
+            <div style={{textAlign: 'right', marginBottom: '16px'}}>
+              <Button
+              type="primary" icon={<CloseOutlined />} onClick={() => setShowRecorder(false)}>Close</Button>
+            </div>
+            <VoiceRecorder onTextAvailable={(text) => {console.log('received text', text); setSearchText(text)}} />
+          </>
+        )}
+        <FileUploadButton/>
         <SelectedFilters></SelectedFilters>
         { (!!searchResult && searchResult.length > 0)
           ? (
