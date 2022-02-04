@@ -12,6 +12,7 @@ import Title from "antd/lib/typography/Title";
 import { StoreService } from "../services/StoreService";
 import { ProductCatalogService } from "../services/ProductCatalogService";
 import { STORE_ID } from "../services/config";
+import FileUploadButton from "./FileUpload";
 
 const { Search } = Input;
 
@@ -214,6 +215,7 @@ const ProductCatalogSearch = () => {
             </div>
             <WebcamCapture webCamType={webCamType} updateSearchText={handleSearch} data={updateSearchInputResult} /> </>
           : <></>}</div>
+          <FileUploadButton/>
         <SelectedFilters></SelectedFilters>
         { (!!searchResult && searchResult.length > 0)
           ? (
